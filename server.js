@@ -1,39 +1,62 @@
 const express = require('express');
+const { WebSocketServer } = require('ws');
+const cors = require('cors');
+const http = require('http');
+
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-// We'll store pinned messages in memory
-// (If Heroku restarts, they'll vanish, but that's usually OK for a live webinar.)
-let pinnedMessages = [];
+// Create HTTP server
+const server = http.createServer(app);
 
-// Endpoint to receive new pinned messages from Make.com
-app.post('/api/messages', (req, res) => {
-  const { text, user, timestamp } = req.body;
+// Create WebSocket server
+const wss = new WebSocketServer({ server });
 
-  // We'll push this message into memory
-  pinnedMessages.push({
-    text,
-    user,
-    timestamp,
-    id: Date.now() // unique ID
-  });
+// Store connected clients
+const clients = new Set();
 
-  return res.status(200).json({ success: true });
+// WebSocket connection handling
+wss.on('connection', (ws) => {
+    clients.add(ws);
+    console.log('Client connected');
+
+    ws.on('close', () => {
+        clients.delete(ws);
+        console.log('Client disconnected');
+    });
 });
 
-// Endpoint to get all pinned messages
-app.get('/api/messages', (req, res) => {
-  // For simplicity, return them all
-  // (You can filter out old ones or time-based ones if you like)
-  res.json(pinnedMessages);
+// Broadcast message to all connected clients
+function broadcast(message) {
+    clients.forEach(client => {
+        if (client.readyState === client.OPEN) {
+            client.send(JSON.stringify(message));
+        }
+    });
+}
+
+// API endpoint for receiving messages from Make.com
+app.post('/api/message', (req, res) => {
+    const { message, type, user } = req.body;
+    
+    // Broadcast the message to all connected clients
+    broadcast({
+        type: 'message',
+        messageType: type || 'host',
+        user: user || 'Selina (Host)',
+        text: message
+    });
+
+    res.json({ success: true });
 });
 
-// Root endpoint to verify server is running
+// Simple test endpoint
 app.get('/', (req, res) => {
-  res.send('Server is running. Ready to receive messages!');
+    res.send('Chat server is running');
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
