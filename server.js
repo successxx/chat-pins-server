@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const app = express();
 app.use(express.json());
@@ -10,7 +9,7 @@ let pinnedMessages = [];
 // Endpoint to receive new pinned messages from Make.com
 app.post('/api/messages', (req, res) => {
   const { text, user, timestamp } = req.body;
-  
+
   // We'll push this message into memory
   pinnedMessages.push({
     text,
@@ -29,11 +28,12 @@ app.get('/api/messages', (req, res) => {
   res.json(pinnedMessages);
 });
 
-const PORT = process.env.PORT || 3000;
 // Root endpoint to verify server is running
 app.get('/', (req, res) => {
   res.send('Server is running. Ready to receive messages!');
 });
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
