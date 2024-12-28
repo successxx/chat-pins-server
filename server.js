@@ -30,6 +30,10 @@ app.get('/api/messages', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+// Root endpoint to verify server is running
+app.get('/', (req, res) => {
+  res.send('Server is running. Ready to receive messages!');
+});
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
