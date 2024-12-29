@@ -99,7 +99,7 @@ async function getClaudeResponse(userMessage) {
                 'anthropic-version': '2024-03-15'  // Updated to latest version
             },
             body: JSON.stringify({
-                model: 'claude-3-sonnet-20240229',  // Changed to Sonnet
+                model: 'claude-3-5-sonnet-20241022',  // Changed to Sonnet
                 max_tokens: 150,
                 messages: [
                     {
