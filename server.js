@@ -96,10 +96,10 @@ async function getClaudeResponse(userMessage) {
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': process.env.CLAUDE_API_KEY,
-                'anthropic-version': '2024-10-22'  // Updated to latest version
+                'anthropic-version': '2023-06-01'  // Updated to latest version
             },
             body: JSON.stringify({
-                model: 'claude-3-5-sonnet-20241022',  // Changed to Sonnet
+                model: 'claude-3-sonnet-20240229',  // Changed to Sonnet
                 max_tokens: 2000,
                 messages: [
                     {
