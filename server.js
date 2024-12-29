@@ -138,7 +138,32 @@ async function getClaudeResponse(userMessage) {
             throw new Error('Invalid API response structure');
         }
 
-        return data.content[0].text;
+        let responseText = data.content[0].text;
+        
+        // Add this new time-handling block
+        if (userMessage.toLowerCase().includes('live')) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true, 
+                timeZone: 'America/New_York' 
+            }).toLowerCase(); // keep it lowercase for casual feel
+            
+            const month = now.toLocaleString('en-US', { 
+                month: 'short',
+                timeZone: 'America/New_York'
+            });
+            
+            const day = now.toLocaleString('en-US', { 
+                day: 'numeric',
+                timeZone: 'America/New_York'
+            });
+            
+            responseText = `yep, its ${month} ${day} at ${timeStr} est`;
+        }
+
+        return responseText;
     } catch (error) {
         console.error('Full Claude API error:', error);
         return 'having trouble connecting - try again in a sec!';
