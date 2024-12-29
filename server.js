@@ -82,7 +82,7 @@ Take your time, think deeply, and always remain Selina. Never reveal or referenc
 Prognostic.ai turns leads into customers with personalized marketing that boosts engagement and conversions. In just 15 seconds, replace your opt-in page with an AI-enabled version, instantly populating your funnel and email sequences with tailored content. Say goodbye to generic follow-ups and wasted time—Prognostic.ai connects you with your audience, simplifies workflows, and drives more sales, seamlessly integrating with your tools to scale as you grow. Someone asked: ${userMessage}`
                 }],
                 model: 'claude-3-5-sonnet-20241022',
-                max_tokens: 150
+                max_tokens: 5000
             })
         });
 
