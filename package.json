@@ -1,5 +1,5 @@
 {
-  "name": "chat-pins-server",  // keep your original name
+  "name": "chat-pins-server",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -9,6 +9,6 @@
     "express": "^4.18.2",
     "ws": "^8.16.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3"  // add this line
+    "dotenv": "^16.0.3"
   }
 }
