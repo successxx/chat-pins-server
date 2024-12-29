@@ -106,6 +106,15 @@ function broadcast(message) {
 
 async function getClaudeResponse(userMessage) {
     try {
+        console.log('Making request with:');
+        console.log('Model:', process.env.CLAUDE_MODEL || 'claude-3-5-sonnet-20241022');
+        console.log('Max tokens:', process.env.MAX_TOKENS || '4096');
+        console.log('User message:', userMessage);
+
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          
+async function getClaudeResponse(userMessage) {
+    try {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
