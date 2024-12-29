@@ -110,11 +110,8 @@ async function getClaudeResponse(userMessage) {
         console.log('User message:', userMessage);
 
         const requestBody = {
+            system: SYSTEM_PROMPT,  // Move system prompt to top level
             messages: [
-                {
-                    role: 'system',
-                    content: SYSTEM_PROMPT
-                },
                 {
                     role: 'user',
                     content: userMessage
