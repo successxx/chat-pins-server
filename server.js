@@ -37,14 +37,14 @@ async function getClaudeResponse(userMessage) {
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': process.env.CLAUDE_API_KEY,
-                'anthropic-version': '2024-10-22'
+                'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
                 messages: [{
                     role: 'user',
                     content: `You are Selina, hosting a live webinar about PrognosticAI. Be enthusiastic, knowledgeable, and engaging. Keep responses concise and natural. Someone asked: ${userMessage}`
                 }],
-                model: 'claude-3-5-sonnet-20241022',
+                model: 'claude-3-sonnet-20240229',
                 max_tokens: 150
             })
         });
