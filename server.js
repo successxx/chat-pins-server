@@ -9,7 +9,6 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const clients = new Set();
 
-
 wss.on('connection', (ws) => {
     clients.add(ws);
     console.log('Client connected');
@@ -19,7 +18,6 @@ wss.on('connection', (ws) => {
     });
 });
 
-
 function broadcast(message) {
     clients.forEach(client => {
         if (client.readyState === client.OPEN) {
@@ -27,7 +25,6 @@ function broadcast(message) {
         }
     });
 }
-
 
 async function getClaudeResponse(userMessage) {
     try {
@@ -94,46 +91,63 @@ async function getClaudeResponse(userMessage) {
             }
         };
 
-
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': process.env.CLAUDE_API_KEY,
-                'anthropic-version': '2023-06-01'
+                'anthropic-version': '2024-03-15'  // Updated to latest version
             },
             body: JSON.stringify({
-                messages: [{
-                    role: 'system',
-                    content: JSON.stringify(prompt)
-                }, {
-                    role: 'user',
-                    content: userMessage
-                }],
-                model: 'claude-3-5-sonnet-20241022',
-                max_tokens: 150
+                model: 'claude-3-sonnet-20240229',  // Changed to Sonnet
+                max_tokens: 150,
+                messages: [
+                    {
+                        role: 'system',
+                        content: JSON.stringify(prompt)
+                    },
+                    {
+                        role: 'user',
+                        content: userMessage
+                    }
+                ]
             })
         });
+
         const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error.message || 'API error');
+        }
+
         return data.content[0].text;
     } catch (error) {
         console.error('Claude API error:', error);
-        return 'I apologize, but I\'m having trouble connecting to our AI system. Could you please repeat your question?';
+        throw error; // Let the route handler deal with the error
     }
 }
-
 
 app.post('/api/message', async (req, res) => {
     const { message, type, user } = req.body;
     
     if (type === 'user') {
-        const aiResponse = await getClaudeResponse(message);
-        broadcast({
-            type: 'message',
-            messageType: 'host',
-            user: 'Selina (Host)',
-            text: aiResponse
-        });
+        try {
+            const aiResponse = await getClaudeResponse(message);
+            broadcast({
+                type: 'message',
+                messageType: 'host',
+                user: 'Selina (Host)',
+                text: aiResponse
+            });
+            res.json({ success: true, response: aiResponse });
+        } catch (error) {
+            console.error('Error in /api/message:', error);
+            res.status(500).json({ 
+                success: false, 
+                error: 'Internal server error',
+                response: 'I apologize, but I\'m having trouble connecting. Could you please try again?' 
+            });
+        }
     } else {
         broadcast({
             type: 'message',
@@ -141,16 +155,13 @@ app.post('/api/message', async (req, res) => {
             user: user || 'Selina (Host)',
             text: message
         });
+        res.json({ success: true });
     }
-    
-    res.json({ success: true });
 });
-
 
 app.get('/', (req, res) => {
     res.send('Chat server is running');
 });
-
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
