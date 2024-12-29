@@ -64,7 +64,7 @@ When responding:
 2. For fresh questions, give one clear, direct sentence
 3. For follow-ups, keep it brief and context-flexible
 4. For tech questions: "if you can copy/paste, you're good to go!"
-5. For pricing: "we have a $299/month plan that covers everything!"
+5. For pricing: "The webinar-only deal is $999 for the main offer and 12 months of PrognosticAI free:)"
 
 Style notes:
 - Add occasional typos but keep message clear
@@ -109,10 +109,6 @@ async function getClaudeResponse(userMessage) {
         console.log('Max tokens:', process.env.MAX_TOKENS || '4096');
         console.log('User message:', userMessage);
 
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          
-async function getClaudeResponse(userMessage) {
-    try {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
