@@ -100,7 +100,7 @@ async function getClaudeResponse(userMessage) {
             },
             body: JSON.stringify({
                 model: 'claude-3-5-sonnet-20241022',  // Changed to Sonnet
-                max_tokens: 150,
+                max_tokens: 2000,
                 messages: [
                     {
                         role: 'system',
