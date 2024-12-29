@@ -109,6 +109,23 @@ async function getClaudeResponse(userMessage) {
         console.log('Max tokens:', process.env.MAX_TOKENS || '4096');
         console.log('User message:', userMessage);
 
+        const requestBody = {
+            messages: [
+                {
+                    role: 'system',
+                    content: SYSTEM_PROMPT
+                },
+                {
+                    role: 'user',
+                    content: userMessage
+                }
+            ],
+            model: process.env.CLAUDE_MODEL || 'claude-3-5-sonnet-20241022',
+            max_tokens: parseInt(process.env.MAX_TOKENS) || 4096
+        };
+
+        console.log('Request body:', JSON.stringify(requestBody, null, 2));
+
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
@@ -116,31 +133,27 @@ async function getClaudeResponse(userMessage) {
                 'x-api-key': process.env.CLAUDE_API_KEY,
                 'anthropic-version': '2024-03-01'
             },
-            body: JSON.stringify({
-                messages: [
-                    {
-                        role: 'system',
-                        content: SYSTEM_PROMPT
-                    },
-                    {
-                        role: 'user',
-                        content: userMessage
-                    }
-                ],
-                model: process.env.CLAUDE_MODEL || 'claude-3-5-sonnet-20241022',
-                max_tokens: parseInt(process.env.MAX_TOKENS) || 4096
-            })
+            body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
+            const errorText = await response.text();
             console.error('Claude API error status:', response.status);
-            throw new Error('API call failed');
+            console.error('Error details:', errorText);
+            throw new Error(`API failed with status ${response.status}: ${errorText}`);
         }
 
         const data = await response.json();
+        console.log('API Response:', data);
+        
+        if (!data.content || !data.content[0] || !data.content[0].text) {
+            console.error('Unexpected API response structure:', data);
+            throw new Error('Invalid API response structure');
+        }
+
         return data.content[0].text;
     } catch (error) {
-        console.error('Claude API error:', error);
+        console.error('Full Claude API error:', error);
         return 'having trouble connecting - try again in a sec!';
     }
 }
