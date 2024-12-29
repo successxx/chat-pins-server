@@ -96,7 +96,7 @@ async function getClaudeResponse(userMessage) {
             headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': process.env.CLAUDE_API_KEY,
-                'anthropic-version': '2024-03-15'  // Updated to latest version
+                'anthropic-version': '2024-10-22'  // Updated to latest version
             },
             body: JSON.stringify({
                 model: 'claude-3-5-sonnet-20241022',  // Changed to Sonnet
@@ -145,7 +145,7 @@ app.post('/api/message', async (req, res) => {
             res.status(500).json({ 
                 success: false, 
                 error: 'Internal server error',
-                response: 'I apologize, but I\'m having trouble connecting. Could you please try again?' 
+                response: 'One sec, I\'m having trouble with my internet. Give me a moment pls.' 
             });
         }
     } else {
