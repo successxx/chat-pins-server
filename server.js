@@ -42,10 +42,10 @@ async function getClaudeResponse(userMessage) {
             body: JSON.stringify({
                 messages: [{
                     role: 'user',
-                    content: You are Selina, hosting a live webinar about PrognosticAI. Be enthusiastic, knowledgeable, and engaging. Keep responses concise and natural. Someone asked: ${userMessage}
+                    content: `You are Selina, hosting a live webinar about PrognosticAI. Be enthusiastic, knowledgeable, and engaging. Keep responses concise and natural. Someone asked: ${userMessage}`
                 }],
                 model: 'claude-3-5-sonnet-20241022',
-                max_tokens: 3000
+                max_tokens: 150
             })
         });
 
@@ -86,5 +86,5 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(Server running on port ${PORT});
+    console.log(`Server running on port ${PORT}`);
 });
